@@ -1,7 +1,11 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
+require("dotenv").config();
+
+// module imports
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const router= require('./routes.js')
 
 // setup morgan as logger to log request details
 app.use(morgan('dev'));
@@ -10,14 +14,14 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var PORT = process.env.PORT || 3000;
+// setup router
+app.use("/", router);
+
+// catch-all route ERROR
+router.get('*', (req, res) => res.status(404).json({
+    message: 'Error - Not found'
+  }));
   
-app.get('/',(req,res) => {
-    res.send('Welcome Page');
-})
-  
-var PORT = process.env.PORT || 3001;
-  
-app.listen(PORT,() => {
-    console.log(`Running on PORT ${PORT}`);
+app.listen(process.env.PORT,() => {
+    console.log(`Running on PORT ${process.env.PORT}`);
 })
